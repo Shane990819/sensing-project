@@ -43,7 +43,6 @@ class ImageViewer:
         self.master.title("GUI")
         self.master.geometry('1000x800')
 
-        # 创建左侧第一列
         self.title_label = tk.Label(master, text="Image")
         self.title_label.grid(row=0, column=0,  padx=10, pady=10)
 
@@ -56,7 +55,6 @@ class ImageViewer:
         self.load_button = tk.Button(master, text="Load Image", command=self.load_image)
         self.load_button.grid(row=3, column=0, padx=10, pady=10)
 
-        # 创建右侧第二列
         self.text_label = tk.Label(master, text="Result")
         self.text_label.grid(row=0, column=1, padx=10, pady=10)
 
@@ -64,10 +62,10 @@ class ImageViewer:
         self.result.grid(row=1, column=1, padx=10, pady=10)
 
     def load_image(self):
-        # 打开文件选择对话框
+        # Open the file selection dialog
         file_path = filedialog.askopenfilename()
 
-        # 如果没有选择文件，则返回
+        # Returns if no file is selected
         if not file_path:
             return
         img_show = Image.open(file_path).resize((450,300))
@@ -77,7 +75,7 @@ class ImageViewer:
         self.image_label_origin.image = photo
 
 
-        # 加载图像并显示在标签上
+        # Load image and do the prediction
         im0 = cv2.imread(file_path)
         imgsz = check_img_size((640,640), s=stride)
         im = letterbox(im0, imgsz, stride=stride, auto=pt)[0]  # padded resize
@@ -109,24 +107,24 @@ class ImageViewer:
 
         img = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB)
 
-        # 将OpenCV图像转换为PIL图像
+        # Convert OpenCV to PIL
         pil_img = Image.fromarray(img).resize((450,300))
         photo = ImageTk.PhotoImage(pil_img)
         self.image_label_detect.configure(image=photo)
         self.image_label_detect.image = photo
 
 
-        # 更新文本标签的内容
+        # Update the result
         self.result.configure(text=f"已加载图像: {file_path}")
 
 
 
 root = tk.Tk()
-# 设置网格布局
+# Configure the grid
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=1)
 root.rowconfigure(1, weight=1)
 
-# 创建ImageViewer对象并运行主循环
+# Create ImageViewer and begin the main loop
 app = ImageViewer(root)
 root.mainloop()
